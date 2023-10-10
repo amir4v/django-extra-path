@@ -8,13 +8,12 @@ from functools import wraps
 from urllib.parse import urlparse
 
 from django.conf import settings
-from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.core.exceptions import PermissionDenied
 from django.urls.resolvers import URLPattern
 from django.shortcuts import resolve_url
 from django.urls import path
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required, \
+                                           permission_required # All permission(s)
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -50,6 +49,7 @@ def user_passes_group_test(test_func, login_url=None,
 
 
 def is_member(user, group):
+    # Any group(s)
     if isinstance(group, str):
         group = (group,)
     return user.groups.filter(name__in=group).exists()
@@ -69,7 +69,7 @@ def login_required_csrf_exempt_path(route, view, name=None, kwargs=None):
     return path(route, csrf_exempt(login_required(view)), name, kwargs)
 
 
-# Handy (Persmission) path functions section
+# Handy (Permission) path functions section
 
 def has_permission_path(permission, route, view, name=None, kwargs=None):
     return path(route, permission_required(permission)(view), name, kwargs)
@@ -161,7 +161,7 @@ def group_path(urlpatterns, prefix_route='', paths=[], name='',
         route = route.replace('//', '/') + '/'
         
         path.name = name
-        path.pattern._route = route
+        path.pattern._route = '' if route in ['', '/', '//'] else route
         
         if effect_on_root_too and any(accesses):
             login, csrf, perm, grp = accesses
@@ -195,7 +195,9 @@ def group_path(urlpatterns, prefix_route='', paths=[], name='',
         
         return path
     
-    for path in paths:
+    for path in filter(lambda path: path != None, paths):
+        # path.default_args = path.default_args if type(path.default_args) == dict else {}
+        
         inner_paths = path.default_args.get('paths', [])
         root_effect = path.default_args.get('root_effect', True)
         
