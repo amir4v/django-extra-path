@@ -173,11 +173,11 @@ def group_path(urlpatterns, prefix_route='', paths=[], name='',
                 path.callback = csrf_exempt(path.callback)
             # permission
             if perm != None:
-                path.callback = permission_required(permission)(path.callback)
+                path.callback = permission_required(perm)(path.callback)
             # group
             if grp != None:
                 path.callback = user_passes_group_test(is_member,
-                                                   group=group)(path.callback)
+                                                   group=grp)(path.callback)
         else:
             # login_required
             if is_login_required:
@@ -205,6 +205,8 @@ def group_path(urlpatterns, prefix_route='', paths=[], name='',
         inner_is_csrf_exempt = path.default_args.get('is_csrf_exempt', None)
         inner_permission = path.default_args.get('permission', None)
         inner_group = path.default_args.get('group', None)
+        
+        path.default_args = {}
         
         if type(path) == URLPattern:
             urlpatterns.append(
