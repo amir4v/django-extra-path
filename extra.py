@@ -17,6 +17,50 @@ from django.contrib.auth.decorators import login_required, \
 from django.views.decorators.csrf import csrf_exempt
 
 
+# Accessibility helper functions - Start
+
+from django import template
+
+register = template.Library()
+
+
+@property
+def is_user_admin(self):
+    return self.type == self.TYPES.ADMIN
+
+
+@property
+def is_in_admin(self):
+    return is_member(self, self.GROUPS.ADMIN)
+
+
+@property
+def is_overall_admin(self):
+    return self.is_user_admin or self.is_in_admin
+
+
+@register.filter(name='has_group')
+def has_group(user, group):
+    return is_member(user, group)
+
+
+@register.filter(name='is_user_admin')
+def is_user_admin(user):
+    return user.is_user_admin
+
+
+@register.filter(name='is_in_admin')
+def is_in_admin(user):
+    return user.is_in_admin
+
+
+@register.filter(name='is_overall_admin')
+def is_overall_admin(user):
+    return user.is_overall_admin
+
+# Accessibility helper functions - End
+
+
 # Group checking functions section
 
 def user_passes_group_test(test_func, login_url=None,
