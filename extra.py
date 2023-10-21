@@ -25,6 +25,11 @@ register = template.Library()
 
 
 @property
+def has_group(self, group):
+    return is_member(self, group)
+
+
+@property
 def is_user_admin(self):
     return self.type == self.TYPES.ADMIN
 
