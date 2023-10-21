@@ -46,7 +46,7 @@ def is_overall_admin(self):
 
 @register.filter(name='has_group')
 def has_group(user, group):
-    return is_member(user, group)
+    return user.has_group(user, group)
 
 
 @register.filter(name='is_user_admin')
