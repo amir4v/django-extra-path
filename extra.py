@@ -36,7 +36,7 @@ def is_in_admin(self):
 
 @property
 def is_overall_admin(self):
-    return self.is_user_admin or self.is_in_admin
+    return self.is_user_admin or self.is_in_admin or self.is_admin
 
 
 @register.filter(name='has_group')
