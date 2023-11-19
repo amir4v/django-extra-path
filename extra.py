@@ -170,8 +170,8 @@ def has_group_login_required_csrf_exempt_path(group, route, view,
 
 def controll_path(route, view, name=None,
                   is_login_required=False, is_csrf_exempt=False,
-                  permission=None, group=None
-                  , kwargs=None):
+                  permission=None, group=None,
+                  kwargs=None):
     # login_required
     if is_login_required:
         view = login_required(view)
