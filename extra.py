@@ -79,7 +79,7 @@ def user_passes_group_test(test_func, login_url=None,
     def decorator(view_func):
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):
-            if test_func(request.user, group=group):
+            if test_func(request.user, group):
                 return view_func(request, *args, **kwargs)
             path = request.build_absolute_uri()
             resolved_login_url = resolve_url(login_url or settings.LOGIN_URL)
