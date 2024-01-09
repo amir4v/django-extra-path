@@ -245,7 +245,8 @@ def group_path(urlpatterns, prefix_route='', paths=[], name='',
         return path
     
     for path in filter(lambda path: path != None, paths):
-        # path.default_args = path.default_args if type(path.default_args) == dict else {}
+        if 'default_args' not in dir(path):
+            path.__setattr__('default_args', dict())
         
         inner_paths = path.default_args.get('paths', [])
         root_effect = path.default_args.get('root_effect', True)
